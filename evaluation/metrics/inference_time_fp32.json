@@ -1,0 +1,57 @@
+{
+  "gpu": "NVIDIA TITAN RTX",
+  "node": "g-0-10",
+  "precision_das_pw": "float32",
+  "phantom": "exp_resolution",
+  "grid": [
+    612,
+    388
+  ],
+  "das": {
+    "per_angle_s": 8.635507982806303,
+    "per_angle_std_s": 0.07395529059891136,
+    "n_measured": 8,
+    "precision": "float32",
+    "total_1pw_s": 8.635507982806303,
+    "total_75pw_s": 647.6630987104727
+  },
+  "schiffner": {
+    "per_angle_s": 8.599029408185743,
+    "per_angle_std_s": 0.10975916325136659,
+    "n_measured": 8,
+    "precision": "float32",
+    "total_1pw_s": 8.599029408185743,
+    "total_75pw_s": 644.9272056139307
+  },
+  "unet_ag": {
+    "n_frequencies_adjoint": 945,
+    "adjoint_s": 11.61266280664131,
+    "adjoint_std_s": 0.04435891018591322,
+    "envelope_s": 0.004185339249670505,
+    "envelope_std_s": 7.370937499612776e-05,
+    "network_s": 0.012007041415199638,
+    "network_std_s": 0.00034156828671174635,
+    "total_s": 11.62885518730618
+  },
+  "drus": {
+    "svd_load_s": 20.779127798974514,
+    "end_to_end_s": 168.04891131806653,
+    "end_to_end_runs_s": [
+      168.83531171712093,
+      167.26251091901213
+    ],
+    "unet_s": 0.084302775003016,
+    "unet_std_s": 0.0005044170598527093,
+    "vvt_s": 0.5167114404030144,
+    "vvt_std_s": 0.0016327414195984602,
+    "spectral_fraction_per_step": 0.9484209118855693
+  },
+  "table": {
+    "DAS 1 PW": 8.635507982806303,
+    "Schiffner Fd-F 1 PW": 8.599029408185743,
+    "DAS 75 PW": 647.6630987104727,
+    "Schiffner Fd-F 75 PW": 644.9272056139307,
+    "DRUS (DDRM 50 steps)": 168.04891131806653,
+    "UNet-AG (proposed)": 11.62885518730618
+  }
+}

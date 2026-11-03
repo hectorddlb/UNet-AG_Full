@@ -1,11 +1,11 @@
-# Entorno verificado: Python 3.11 + CUDA 12.1
+# Verified environment: Python 3.11 + CUDA 12.1
 torch>=2.5,<3
 numpy>=1.24
 scipy>=1.10
 h5py>=3.8
 matplotlib>=3.7
 tqdm>=4.65
-# Solo para la replica DRUS (SVD densa 65536^2 via MKL ILP64)
+# Only for the DRUS replica (dense 65536^2 SVD via MKL ILP64)
 mkl>=2023.0 ; platform_system == "Linux"
-# Solo para el fine-tune del prior de difusion de DRUS
+# Only for fine-tuning the DRUS diffusion prior
 blobfile>=2.0

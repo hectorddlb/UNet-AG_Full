@@ -1,0 +1,423 @@
+{
+  "methods_scenario": "exp_resolution",
+  "dimensions": {
+    "Nt": 3328,
+    "Nel": 128,
+    "fs": 20832000.0,
+    "c": 1540.0,
+    "pitch": 0.0002999999560415745,
+    "f_lb": 2250000.0,
+    "f_ub": 6750000.0,
+    "Npad": 453,
+    "Ndft": 3781,
+    "Nf": 817,
+    "n_angles": 75
+  },
+  "dimensions_adjoint": {
+    "Nt": 3328,
+    "Nel": 128,
+    "fs": 20832000.0,
+    "c": 1540.0,
+    "pitch": 0.0002999999560415745,
+    "f_lb": 2604000.0,
+    "f_ub": 7812000.0,
+    "Npad": 453,
+    "Ndft": 3781,
+    "Nf": 945,
+    "n_angles": 75
+  },
+  "grid": [
+    612,
+    388
+  ],
+  "convention": {
+    "fourier_kernel_per_tuple": {
+      "aw * tof": 1,
+      "exp(1j * .)": 2,
+      "dlat_a / hw_elem": 1,
+      "Tukey.compute_samples": 5,
+      "apod * valid": 1,
+      "NormalizationOn (sum + div)": 2,
+      "apod(real) * eph(complex)": 2,
+      "* rf_bp (complex x complex)": 6,
+      "sum over elements": 2,
+      "sum over frequencies": 2
+    },
+    "das_temporal_per_tuple": {
+      "dx = x - xk": 1,
+      "dx*dx + z*z": 2,
+      "sqrt": 1,
+      "/ c": 1,
+      "+ t_tx - t_start": 2,
+      "* fs": 1,
+      "round": 1,
+      "in_range (2 cmp)": 2,
+      "in_aper (abs + cmp)": 2,
+      "Hanning (mul+div+cos+add+mul)": 5,
+      "clip": 2,
+      "samples * v * w": 2,
+      "accumulation": 1
+    }
+  },
+  "methods": [
+    {
+      "method": "DAS 1 PW",
+      "input": "1 PW",
+      "flops": 596001526458.6359,
+      "params": 0,
+      "breakdown": "Fourier x1 angle (100.0% focus)"
+    },
+    {
+      "method": "Schiffner Fd-F 1 PW",
+      "input": "1 PW",
+      "flops": 596001526458.6359,
+      "params": 0,
+      "breakdown": "identical to DAS 1 PW: only the F-number changes, which adds no tuples to the kernel"
+    },
+    {
+      "method": "DAS 75 PW",
+      "input": "75 PW",
+      "flops": 44700149627885.695,
+      "params": 0,
+      "breakdown": "Fourier x75 angles"
+    },
+    {
+      "method": "Schiffner Fd-F 75 PW",
+      "input": "75 PW",
+      "flops": 44700149627885.695,
+      "params": 0,
+      "breakdown": "identical to DAS 75 PW: Fd-F adds no tuples"
+    },
+    {
+      "method": "DRUS (DDRM 50 steps)",
+      "input": "1 PW",
+      "flops": 115874517221376.0,
+      "params": 552814086,
+      "breakdown": "50 x UNet256 (111.98 TFLOP) + V/Vt (3.89 TFLOP)"
+    },
+    {
+      "method": "UNet-AG (proposed)",
+      "input": "1 PW",
+      "flops": 749327510586.6359,
+      "params": 3529366,
+      "breakdown": "adjoint (689.4 GFLOP, 945 frequencies) + UNet (60.0 GFLOP)"
+    }
+  ],
+  "scenarios": {
+    "sim_resolution": {
+      "dimensions_das": {
+        "Nt": 1527,
+        "Nel": 128,
+        "fs": 20832000.0,
+        "c": 1540.0,
+        "pitch": 0.0002999999560415745,
+        "f_lb": 2250000.0,
+        "f_ub": 6750000.0,
+        "Npad": 453,
+        "Ndft": 1981,
+        "Nf": 428,
+        "n_angles": 75
+      },
+      "dimensions_adjoint": {
+        "Nt": 1527,
+        "Nel": 128,
+        "fs": 20832000.0,
+        "c": 1540.0,
+        "pitch": 0.0002999999560415745,
+        "f_lb": 2604000.0,
+        "f_ub": 7812000.0,
+        "Npad": 453,
+        "Ndft": 1981,
+        "Nf": 495,
+        "n_angles": 75
+      },
+      "methods": [
+        {
+          "method": "DAS 1 PW",
+          "input": "1 PW",
+          "flops": 312224833496.371,
+          "params": 0,
+          "breakdown": "Fourier x1 angle (100.0% focus)"
+        },
+        {
+          "method": "Schiffner Fd-F 1 PW",
+          "input": "1 PW",
+          "flops": 312224833496.371,
+          "params": 0,
+          "breakdown": "identical to DAS 1 PW: only the F-number changes, which adds no tuples to the kernel"
+        },
+        {
+          "method": "DAS 75 PW",
+          "input": "75 PW",
+          "flops": 23416897655715.824,
+          "params": 0,
+          "breakdown": "Fourier x75 angles"
+        },
+        {
+          "method": "Schiffner Fd-F 75 PW",
+          "input": "75 PW",
+          "flops": 23416897655715.824,
+          "params": 0,
+          "breakdown": "identical to DAS 75 PW: Fd-F adds no tuples"
+        },
+        {
+          "method": "DRUS (DDRM 50 steps)",
+          "input": "1 PW",
+          "flops": 115874517221376.0,
+          "params": 552814086,
+          "breakdown": "50 x UNet256 (111.98 TFLOP) + V/Vt (3.89 TFLOP)"
+        },
+        {
+          "method": "UNet-AG (proposed)",
+          "input": "1 PW",
+          "flops": 421053462872.371,
+          "params": 3529366,
+          "breakdown": "adjoint (361.1 GFLOP, 495 frequencies) + UNet (60.0 GFLOP)"
+        }
+      ]
+    },
+    "sim_contrast": {
+      "dimensions_das": {
+        "Nt": 1891,
+        "Nel": 128,
+        "fs": 20832000.0,
+        "c": 1540.0,
+        "pitch": 0.0002999999560415745,
+        "f_lb": 2250000.0,
+        "f_ub": 6750000.0,
+        "Npad": 453,
+        "Ndft": 2345,
+        "Nf": 506,
+        "n_angles": 75
+      },
+      "dimensions_adjoint": {
+        "Nt": 1891,
+        "Nel": 128,
+        "fs": 20832000.0,
+        "c": 1540.0,
+        "pitch": 0.0002999999560415745,
+        "f_lb": 2604000.0,
+        "f_ub": 7812000.0,
+        "Npad": 453,
+        "Ndft": 2345,
+        "Nf": 586,
+        "n_angles": 75
+      },
+      "methods": [
+        {
+          "method": "DAS 1 PW",
+          "input": "1 PW",
+          "flops": 369126007006.6089,
+          "params": 0,
+          "breakdown": "Fourier x1 angle (100.0% focus)"
+        },
+        {
+          "method": "Schiffner Fd-F 1 PW",
+          "input": "1 PW",
+          "flops": 369126007006.6089,
+          "params": 0,
+          "breakdown": "identical to DAS 1 PW: only the F-number changes, which adds no tuples to the kernel"
+        },
+        {
+          "method": "DAS 75 PW",
+          "input": "75 PW",
+          "flops": 27684485668983.664,
+          "params": 0,
+          "breakdown": "Fourier x75 angles"
+        },
+        {
+          "method": "Schiffner Fd-F 75 PW",
+          "input": "75 PW",
+          "flops": 27684485668983.664,
+          "params": 0,
+          "breakdown": "identical to DAS 75 PW: Fd-F adds no tuples"
+        },
+        {
+          "method": "DRUS (DDRM 50 steps)",
+          "input": "1 PW",
+          "flops": 115874517221376.0,
+          "params": 552814086,
+          "breakdown": "50 x UNet256 (111.98 TFLOP) + V/Vt (3.89 TFLOP)"
+        },
+        {
+          "method": "UNet-AG (proposed)",
+          "input": "1 PW",
+          "flops": 487437679198.6089,
+          "params": 3529366,
+          "breakdown": "adjoint (427.5 GFLOP, 586 frequencies) + UNet (60.0 GFLOP)"
+        }
+      ]
+    },
+    "exp_resolution": {
+      "dimensions_das": {
+        "Nt": 3328,
+        "Nel": 128,
+        "fs": 20832000.0,
+        "c": 1540.0,
+        "pitch": 0.0002999999560415745,
+        "f_lb": 2250000.0,
+        "f_ub": 6750000.0,
+        "Npad": 453,
+        "Ndft": 3781,
+        "Nf": 817,
+        "n_angles": 75
+      },
+      "dimensions_adjoint": {
+        "Nt": 3328,
+        "Nel": 128,
+        "fs": 20832000.0,
+        "c": 1540.0,
+        "pitch": 0.0002999999560415745,
+        "f_lb": 2604000.0,
+        "f_ub": 7812000.0,
+        "Npad": 453,
+        "Ndft": 3781,
+        "Nf": 945,
+        "n_angles": 75
+      },
+      "methods": [
+        {
+          "method": "DAS 1 PW",
+          "input": "1 PW",
+          "flops": 596001526458.6359,
+          "params": 0,
+          "breakdown": "Fourier x1 angle (100.0% focus)"
+        },
+        {
+          "method": "Schiffner Fd-F 1 PW",
+          "input": "1 PW",
+          "flops": 596001526458.6359,
+          "params": 0,
+          "breakdown": "identical to DAS 1 PW: only the F-number changes, which adds no tuples to the kernel"
+        },
+        {
+          "method": "DAS 75 PW",
+          "input": "75 PW",
+          "flops": 44700149627885.695,
+          "params": 0,
+          "breakdown": "Fourier x75 angles"
+        },
+        {
+          "method": "Schiffner Fd-F 75 PW",
+          "input": "75 PW",
+          "flops": 44700149627885.695,
+          "params": 0,
+          "breakdown": "identical to DAS 75 PW: Fd-F adds no tuples"
+        },
+        {
+          "method": "DRUS (DDRM 50 steps)",
+          "input": "1 PW",
+          "flops": 115874517221376.0,
+          "params": 552814086,
+          "breakdown": "50 x UNet256 (111.98 TFLOP) + V/Vt (3.89 TFLOP)"
+        },
+        {
+          "method": "UNet-AG (proposed)",
+          "input": "1 PW",
+          "flops": 749327510586.6359,
+          "params": 3529366,
+          "breakdown": "adjoint (689.4 GFLOP, 945 frequencies) + UNet (60.0 GFLOP)"
+        }
+      ]
+    },
+    "exp_contrast": {
+      "dimensions_das": {
+        "Nt": 3328,
+        "Nel": 128,
+        "fs": 20832000.0,
+        "c": 1540.0,
+        "pitch": 0.0002999999560415745,
+        "f_lb": 2250000.0,
+        "f_ub": 6750000.0,
+        "Npad": 453,
+        "Ndft": 3781,
+        "Nf": 817,
+        "n_angles": 75
+      },
+      "dimensions_adjoint": {
+        "Nt": 3328,
+        "Nel": 128,
+        "fs": 20832000.0,
+        "c": 1540.0,
+        "pitch": 0.0002999999560415745,
+        "f_lb": 2604000.0,
+        "f_ub": 7812000.0,
+        "Npad": 453,
+        "Ndft": 3781,
+        "Nf": 945,
+        "n_angles": 75
+      },
+      "methods": [
+        {
+          "method": "DAS 1 PW",
+          "input": "1 PW",
+          "flops": 596001526458.6359,
+          "params": 0,
+          "breakdown": "Fourier x1 angle (100.0% focus)"
+        },
+        {
+          "method": "Schiffner Fd-F 1 PW",
+          "input": "1 PW",
+          "flops": 596001526458.6359,
+          "params": 0,
+          "breakdown": "identical to DAS 1 PW: only the F-number changes, which adds no tuples to the kernel"
+        },
+        {
+          "method": "DAS 75 PW",
+          "input": "75 PW",
+          "flops": 44700149627885.695,
+          "params": 0,
+          "breakdown": "Fourier x75 angles"
+        },
+        {
+          "method": "Schiffner Fd-F 75 PW",
+          "input": "75 PW",
+          "flops": 44700149627885.695,
+          "params": 0,
+          "breakdown": "identical to DAS 75 PW: Fd-F adds no tuples"
+        },
+        {
+          "method": "DRUS (DDRM 50 steps)",
+          "input": "1 PW",
+          "flops": 115874517221376.0,
+          "params": 552814086,
+          "breakdown": "50 x UNet256 (111.98 TFLOP) + V/Vt (3.89 TFLOP)"
+        },
+        {
+          "method": "UNet-AG (proposed)",
+          "input": "1 PW",
+          "flops": 749327510586.6359,
+          "params": 3529366,
+          "breakdown": "adjoint (689.4 GFLOP, 945 frequencies) + UNet (60.0 GFLOP)"
+        }
+      ]
+    }
+  },
+  "network": {
+    "unet_ag": {
+      "total": 59954485632.0,
+      "params": 3529366
+    },
+    "drus_unet": {
+      "total": 2239665537024.0,
+      "params": 552814086
+    },
+    "drus_spectral": {
+      "total": 3891240370176.0,
+      "per_call": 25769803776.0,
+      "n_calls": 151
+    }
+  },
+  "temporal_das_reference": {
+    "pw1": {
+      "total": 699070464,
+      "tuples": 30394368,
+      "transcendentals": 60788736
+    },
+    "pw75": {
+      "total": 52430284800,
+      "tuples": 2279577600,
+      "transcendentals": 4559155200
+    }
+  }
+}

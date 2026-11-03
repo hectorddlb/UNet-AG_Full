@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "unetag-1pw-bmode"
 version = "1.0.0"
-description = "Reconstrucción B-mode de ultrasonido desde una sola onda plana con una UNet informada por el F-number dependiente de la frecuencia (y la réplica del método de difusión DRUS con el que se compara)"
+description = "Ultrasound B-mode reconstruction from a single plane wave with a UNet informed by the frequency-dependent F-number (and the replica of the DRUS diffusion method it is compared with)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -23,24 +23,24 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-picmus = ["h5py>=3.8"]            # leer ficheros RF de PICMUS
-figuras = ["matplotlib>=3.7"]      # salida en PNG
-drus   = ["h5py>=3.8", "matplotlib>=3.7"]   # réplica del método de difusión (orden `drus`)
-drus-entrenamiento = ["blobfile>=2.0", "tqdm>=4.65", "mkl"]   # ajuste fino del prior y SVD (MKL ILP64)
-todo   = ["h5py>=3.8", "matplotlib>=3.7", "blobfile>=2.0", "tqdm>=4.65"]
+picmus = ["h5py>=3.8"]            # read PICMUS RF files
+figures = ["matplotlib>=3.7"]      # PNG output
+drus   = ["h5py>=3.8", "matplotlib>=3.7"]   # replica of the diffusion method (`drus` command)
+drus-training = ["blobfile>=2.0", "tqdm>=4.65", "mkl"]   # prior fine-tuning and SVD (MKL ILP64)
+all    = ["h5py>=3.8", "matplotlib>=3.7", "blobfile>=2.0", "tqdm>=4.65"]
 
 [project.scripts]
 unetag = "unet_ag.cli:main"
 drus = "drus.cli:main"
 
 [project.urls]
-Repositorio = "https://github.com/hectorddlb/UNet-AG_Tesis"
+Repository = "https://github.com/hectorddlb/UNet-AG_Full"
 
 [tool.setuptools]
-package-dir = { "" = "codigo" }
+package-dir = { "" = "code" }
 
 [tool.setuptools.packages.find]
-where = ["codigo"]
+where = ["code"]
 include = ["unet_ag*", "schiffner_das*", "drus*", "guided_diffusion*"]
 
 [tool.setuptools.package-data]

@@ -4,12 +4,12 @@ __pycache__/
 *.out
 .pytest_cache/
 .venv/
-/resultados/
+/results/
 *.egg-info/
 build/
 dist/
-# intermedios de la evaluación y artefactos que no se versionan
-evaluacion/npys/
-evaluacion/figuras/
-evaluacion/validacion_matlab/trabajo/
-metodos/04_drus/artefactos/
+# evaluation intermediates and artifacts that are not versioned
+evaluation/npys/
+evaluation/figures/
+evaluation/matlab_validation/work/
+methods/04_drus/artifacts/

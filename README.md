@@ -1,116 +1,115 @@
-# Reconstrucción de imágenes de ultrasonido 2D en modo B desde una sola onda plana
+# 2D B-mode ultrasound image reconstruction from a single plane wave
 
-Repositorio de la tesis de maestría de **Héctor David De Lara Berumen**
-(CIMAT, 2026): código, modelos entrenados, protocolo de evaluación y material
-de reproducción de los resultados reportados.
+Repository of the master's thesis of **Héctor David De Lara Berumen**
+(CIMAT, 2026): code, trained models, evaluation protocol and material to
+reproduce the reported results.
 
-> **Método propuesto — UNet-AG** (*B1-v5_anchor05*). Red UNet con compuertas de
-> atención condicionadas por un mapa de profundidad derivado del F-number
-> dependiente de la frecuencia (Fd-F) de Schiffner, que refina de forma residual
-> el adjunto con apodización Fd-F de **una sola onda plana**. Sobre los
-> escenarios experimentales de PICMUS y respecto del DAS de una onda plana,
-> mejora la detectabilidad de lesión (gCNR) un **36.6 %** (0.528 → 0.721) y
-> además mejora el contraste (CNR, −3.974 → −3.692 dB) y la resolución lateral
-> (FWHM, 3.728 → 2.765 mm), en cada una de las tres semillas por separado, con
-> **749 GFLOP** por imagen: 59.7 veces menos que el *beamformer* Fd-F de 75 ondas
-> planas y 154.6 veces menos que el método de difusión comparado (DRUS).
+> **Proposed method — UNet-AG** (*B1-v5_anchor05*). A UNet with attention gates
+> conditioned on a depth map derived from Schiffner's frequency-dependent
+> F-number (Fd-F), which residually refines the Fd-F-apodized adjoint of a
+> **single plane wave**. On the PICMUS experimental scenarios and with respect
+> to single-plane-wave DAS, it improves lesion detectability (gCNR) by
+> **36.6 %** (0.528 → 0.721) and also improves contrast (CNR, −3.974 →
+> −3.692 dB) and lateral resolution (FWHM, 3.728 → 2.765 mm), in each of the
+> three seeds separately, at **749 GFLOP** per image: 59.7 times less than the
+> 75 plane wave Fd-F *beamformer* and 154.6 times less than the compared
+> diffusion method (DRUS).
 
 ---
 
-## Estructura
+## Layout
 
-| Carpeta | Contenido |
+| Folder | Contents |
 |---|---|
-| `codigo/` | Los paquetes Python: `unet_ag` (método propuesto), `schiffner_das` (port del Fd-F), `drus` (réplica de DRUS) y `guided_diffusion` (red del prior de DRUS) |
-| `metodos/` | Un directorio por método comparado, con sus scripts, trabajos SLURM y resultados ligeros |
-| `datos/` | Generación del conjunto Field II, obtención de PICMUS y la supervisión con la que se entrenó el modelo (287 objetivos Schiffner) |
-| `evaluacion/` | Protocolo de evaluación: scripts, métricas (CSV/JSON), arreglos de la rejilla de evaluación, validación MATLAB y verificaciones |
-| `metodos_descartados/` | Código de los intentos que no prosperaron |
-| `pyproject.toml` | Paquete instalable con dos órdenes: `unetag` (método propuesto) y `drus` (método de difusión) |
+| `code/` | The Python packages: `unet_ag` (proposed method), `schiffner_das` (Fd-F port), `drus` (DRUS replica) and `guided_diffusion` (DRUS prior network) |
+| `methods/` | One directory per compared method, with its scripts, SLURM jobs and lightweight results |
+| `data/` | Generation of the Field II set, how to obtain PICMUS, and the supervision the model was trained with (287 Schiffner targets) |
+| `evaluation/` | Evaluation protocol: scripts, metrics (CSV/JSON), arrays on the evaluation grid, MATLAB validation and verifications |
+| `discarded_methods/` | Code of the attempts that did not succeed |
+| `pyproject.toml` | Installable package with two commands: `unetag` (proposed method) and `drus` (diffusion method) |
 
-### Métodos comparados
+### Compared methods
 
-GFLOP por imagen sobre la rejilla de 612 × 388 puntos en los escenarios
-experimentales, sobre los que se enuncia la hipótesis; los tres escenarios
-están en
-[`evaluacion/metricas/coste_por_escenario.csv`](evaluacion/metricas/coste_por_escenario.csv).
+GFLOP per image on the 612 × 388 point grid in the experimental scenarios, on
+which the hypothesis is stated; the three scenarios are in
+[`evaluation/metrics/cost_per_scenario.csv`](evaluation/metrics/cost_per_scenario.csv).
 
-| Directorio | Método | Entrada | GFLOP |
+| Directory | Method | Input | GFLOP |
 |---|---|---|---|
-| `metodos/01_das_1pw` | DAS, apertura completa | 1 PW | 596 |
-| `metodos/02_schiffner_fdf` | Schiffner Fd-F (1 y 75 PW) | 1 / 75 PW | 596 / 44 700 |
-| `metodos/03_das_75pw` | DAS compuesto coherente | 75 PW | 44 700 |
-| `metodos/04_drus` | DRUS (difusión, DDRM) | 1 PW | 115 875 |
-| `metodos/05_unet_ag_propuesto` | **UNet-AG (propuesto)** | 1 PW | **749** |
+| `methods/01_das_1pw` | DAS, full aperture | 1 PW | 596 |
+| `methods/02_schiffner_fdf` | Schiffner Fd-F (1 and 75 PW) | 1 / 75 PW | 596 / 44 700 |
+| `methods/03_das_75pw` | Coherent compounded DAS | 75 PW | 44 700 |
+| `methods/04_drus` | DRUS (diffusion, DDRM) | 1 PW | 115 875 |
+| `methods/05_unet_ag_proposed` | **UNet-AG (proposed)** | 1 PW | **749** |
 
 ---
 
-## Arranque rápido
+## Quick start
 
 ```bash
-git clone git@github.com:hectorddlb/UNet-AG_Tesis.git
-cd UNet-AG_Tesis
+git clone git@github.com:hectorddlb/UNet-AG_Full.git
+cd UNet-AG_Full
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[todo]"           # instala los paquetes y las órdenes `unetag` y `drus`
+pip install -e ".[all]"            # installs the packages and the `unetag` and `drus` commands
 ```
 
-`pip install -e .` deja importables `unet_ag`, `schiffner_das` y `drus` desde
-cualquier directorio. Si prefieres no instalar nada, `source env.sh` pone
-`codigo/` en el `PYTHONPATH` y `pip install -r requirements.txt` cubre las
-dependencias.
+`pip install -e .` makes `unet_ag`, `schiffner_das` and `drus` importable from
+any directory. If you prefer not to install anything, `source env.sh` puts
+`code/` on the `PYTHONPATH` and `pip install -r requirements.txt` covers the
+dependencies.
 
-> **Instalación en máquinas sin internet** (nodos de cómputo, entornos aislados).
-> Por omisión `pip` construye el paquete en un entorno aislado y descarga
-> `setuptools` para ello, lo que falla sin red. Si ya tienes `setuptools` en el
-> entorno, evita ese paso:
+> **Installing on machines without internet access** (compute nodes, isolated
+> environments). By default `pip` builds the package in an isolated
+> environment and downloads `setuptools` for it, which fails without network
+> access. If `setuptools` is already in the environment, skip that step:
 >
 > ```bash
 > pip install --no-build-isolation --no-deps -e .
 > ```
 
-### Usar el modelo propuesto
+### Using the proposed model
 
 ```bash
-unetag info                  # comprueba que carga (3 529 366 parámetros)
+unetag info                  # checks that it loads (3 529 366 parameters)
 
-# reconstruir un phantom de PICMUS
+# reconstruct a PICMUS phantom
 unetag reconstruct --picmus resolution_distorsion_expe_dataset_rf.hdf5 \
-                   --out bmode.png --save-adjoint inicial.png
+                   --out bmode.png --save-adjoint initial.png
 
-# reconstruir RF propio
-unetag reconstruct --rf mis_datos.npy --geometry mi_geometria.json --out bmode.png
+# reconstruct your own RF
+unetag reconstruct --rf my_data.npy --geometry my_geometry.json --out bmode.png
 ```
 
-Desde Python:
+From Python:
 
 ```python
 from unet_ag.inference import UNetAG, Geometry
 
-modelo = UNetAG.from_pretrained()                    # semilla 42
-bmode  = modelo.reconstruct_picmus("...expe_dataset_rf.hdf5")   # (612, 388) en [0,1]
+model = UNetAG.from_pretrained()                     # seed 42
+bmode = model.reconstruct_picmus("...expe_dataset_rf.hdf5")   # (612, 388) in [0,1]
 
-# o con RF propio
+# or with your own RF
 geom  = Geometry(n_elements=128, n_samples=1527, pitch_m=300e-6,
                  sampling_freq_hz=20.832e6, speed_of_sound=1540.0)
-bmode = modelo.reconstruct(rf, geom)                 # rf: (n_samples, n_elements)
+bmode = model.reconstruct(rf, geom)                  # rf: (n_samples, n_elements)
 ```
 
-Los pesos (41 MB cada uno) viven en `metodos/05_unet_ag_propuesto/checkpoints/`
-y se localizan solos desde un clon; fuera de él, indica la carpeta con
-`UNETAG_CHECKPOINTS=/ruta/a/checkpoints` o con `--ckpt`.
+The weights (41 MB each) live in `methods/05_unet_ag_proposed/checkpoints/`
+and are found automatically from a clone; outside it, give the folder with
+`UNETAG_CHECKPOINTS=/path/to/checkpoints` or with `--ckpt`.
 
-### Usar el método de difusión (DRUS)
+### Using the diffusion method (DRUS)
 
-La réplica de DRUS se encapsula igual que el método propuesto, con la orden
-`drus` y la clase `drus.inference.DRUS`. Sus artefactos no caben en el
-repositorio y se construyen una vez (detalles en
-[`metodos/04_drus/README.md`](metodos/04_drus/README.md)):
+The DRUS replica is wrapped like the proposed method, with the `drus` command
+and the `drus.inference.DRUS` class. Its artifacts do not fit in the
+repository and are built once (details in
+[`methods/04_drus/README.md`](methods/04_drus/README.md)):
 
 ```bash
-export DRUS_ARTIFACTS=/ruta/a/artefactos_drus
-drus prepare operador --picmus /ruta/a/PICMUS   # H, B y observaciones (minutos, CPU)
-drus prepare svd                                # SVD densa de BH (~8.4 h, ~120 GB de RAM, MKL)
-drus prepare prior                              # prior publicado por OpenAI (2.2 GB)
+export DRUS_ARTIFACTS=/path/to/drus_artifacts
+drus prepare operator --picmus /path/to/PICMUS  # H, B and observations (minutes, CPU)
+drus prepare svd                                # dense SVD of BH (~8.4 h, ~120 GB of RAM, MKL)
+drus prepare prior                              # prior published by OpenAI (2.2 GB)
 drus info
 
 drus reconstruct --picmus contrast_speckle_expe_dataset_rf.hdf5 --out drus.png
@@ -119,70 +118,72 @@ drus reconstruct --picmus contrast_speckle_expe_dataset_rf.hdf5 --out drus.png
 ```python
 from drus.inference import DRUS
 
-modelo = DRUS.from_artifacts()                       # $DRUS_ARTIFACTS
-res = modelo.reconstruct_picmus("...expe_dataset_rf.hdf5")   # γ de la tesis, semilla 0
-res.bmode                                            # (256, 256) en [0,1]
+model = DRUS.from_artifacts()                        # $DRUS_ARTIFACTS
+res = model.reconstruct_picmus("...expe_dataset_rf.hdf5")    # thesis γ, seed 0
+res.bmode                                            # (256, 256) in [0,1]
 ```
 
-Requiere GPU para la UNet de 552.8 M parámetros y ~20 GB de RAM para la matriz
-`Vᵀ` de la descomposición espectral.
+It needs a GPU for the 552.8 M parameter UNet and ~20 GB of RAM for the `Vᵀ`
+matrix of the spectral decomposition.
 
 ---
 
-## Reproducir
+## Reproducing
 
-### La evaluación completa
+### The full evaluation
 
-Requiere PICMUS (ver [`datos/README.md`](datos/README.md)) y, para DRUS, sus
-artefactos. Desde la raíz del repositorio:
+Requires PICMUS (see [`data/README.md`](data/README.md)) and, for DRUS, its
+artifacts. From the repository root:
 
 ```bash
-export TESIS_DATASETS=/ruta/a/tus/datasets       # con PICMUS/ dentro
-export DRUS_ARTIFACTS=/ruta/a/artefactos_drus
-python evaluacion/scripts/gen_classical_picmus_fixed.py --device cuda   # DAS y Fd-F, 1 y 75 PW
-python evaluacion/scripts/gen_b1v5_picmus_seeds.py --device cuda        # UNet-AG, 3 semillas
-python evaluacion/scripts/gen_drus_picmus.py                            # DRUS, γ de la tesis
-python evaluacion/scripts/eval_and_figs_finales.py                      # métricas y tablas
+export THESIS_DATASETS=/path/to/your/datasets    # with PICMUS/ inside
+export DRUS_ARTIFACTS=/path/to/drus_artifacts
+python evaluation/scripts/gen_classical_picmus_fixed.py --device cuda   # DAS and Fd-F, 1 and 75 PW
+python evaluation/scripts/gen_b1v5_picmus_seeds.py --device cuda        # UNet-AG, 3 seeds
+python evaluation/scripts/gen_drus_picmus.py                            # DRUS, thesis γ
+python evaluation/scripts/eval_and_figs_final.py                        # metrics and tables
 ```
 
-O todo en un trabajo SLURM: `sbatch evaluacion/scripts/run_resultados_finales.sbatch`.
-Los métodos de 75 ondas planas dominan el tiempo (de 1 a 3.5 h en una TITAN RTX).
+Or everything in one SLURM job: `sbatch evaluation/scripts/run_final_results.sbatch`.
+The 75 plane wave methods dominate the time (1 to 3.5 h on a TITAN RTX).
 
-### El entrenamiento del método propuesto
+### Training the proposed method
 
-Requiere el conjunto Field II. Los objetivos de supervisión ya están en el repo.
+Requires the Field II set. The supervision targets are already in the repo.
 
 ```bash
 python -m unet_ag.train.b1_v5_pulse_aug \
-    --data_root  "$TESIS_DATASETS/field_ii_data_multiangle" \
-    --target_root datos/targets_schiffner_75pw \
-    --output_dir  resultados/mi_corrida \
+    --data_root  "$THESIS_DATASETS/field_ii_data_multiangle" \
+    --target_root data/targets_schiffner_75pw \
+    --output_dir  results/my_run \
     --phantom_type points --anchor_weight 0.5 --epochs 20 --seed 42 \
     --device cuda
 ```
 
-~9 h por semilla en una NVIDIA TITAN RTX de 24 GB. Los trabajos SLURM
-equivalentes están en `metodos/05_unet_ag_propuesto/slurm/`.
+~9 h per seed on a 24 GB NVIDIA TITAN RTX. The equivalent SLURM jobs are in
+`methods/05_unet_ag_proposed/slurm/`.
 
 ---
 
-## Qué está y qué no está en el repositorio
+## What is and is not in the repository
 
-**Incluido:** todo el código; los 3 checkpoints del modelo final (122 MB); los
-287 objetivos de supervisión (262 MB); los arreglos de la rejilla de evaluación
-de los seis métodos (29 MB); las imágenes de la implementación de referencia en
-MATLAB para la validación del port (15 MB); todas las métricas en CSV/JSON; los
-resultados de las verificaciones.
+**Included:** all the code; the 3 checkpoints of the final model (122 MB); the
+287 supervision targets (262 MB); the evaluation-grid arrays of the six
+methods (29 MB); the images of the MATLAB reference implementation for the
+validation of the port (15 MB); all the metrics in CSV/JSON; the results of
+the verifications.
 
-**Excluido por tamaño**, con instrucciones de reconstrucción en la carpeta
-correspondiente: los datasets crudos PICMUS y Field II (~30 GB); los artefactos
-de DRUS (operador, SVD de 51 GB con su matriz de partida —34 GB los factores
-que se conservan— y prior de difusión de 2.2 GB, que se construyen con
-`drus prepare`); el dataset CUBDL.
+**Excluded because of their size**, with reconstruction instructions in the
+corresponding folder: the raw PICMUS and Field II datasets (~30 GB); the DRUS
+artifacts (operator, a 51 GB SVD together with its source matrix —34 GB for
+the factors that are kept— and a 2.2 GB diffusion prior, which are built with
+`drus prepare`); the CUBDL dataset.
 
 ---
 
-## Cita
+## Citation
+
+The thesis is written in Spanish; cite it with its original title:
 
 ```bibtex
 @mastersthesis{DeLara2026,
@@ -196,10 +197,10 @@ que se conservan— y prior de difusión de 2.2 GB, que se construyen con
 }
 ```
 
-## Agradecimiento a trabajos previos
+## Acknowledgement of previous work
 
-Este trabajo reimplementa, adapta o compara con: el F-number dependiente de la
-frecuencia de **Schiffner (2021)**; el esquema autosupervisado de **Zhang et al.
-(2021)**; el método DRUS de **Zhang et al. (2023)**; las compuertas de atención
-de **Oktay et al. (2018)**; el modelo de difusión de **guided-diffusion**
-(OpenAI); el simulador **Field II** y el benchmark **PICMUS**.
+This work reimplements, adapts or compares with: the frequency-dependent
+F-number of **Schiffner (2021)**; the self-supervised scheme of **Zhang et al.
+(2021)**; the DRUS method of **Zhang et al. (2023)**; the attention gates of
+**Oktay et al. (2018)**; the **guided-diffusion** diffusion model (OpenAI);
+the **Field II** simulator and the **PICMUS** benchmark.
